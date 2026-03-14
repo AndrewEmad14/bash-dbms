@@ -1,15 +1,15 @@
 #!/bin/bash
-# - Create Database
-# - List Databases
-# - Connect To Databases
-# - Drop Database
+set -euo pipefail
 
+# load configuration and create databases root if missing
+source "$(dirname "${BASH_SOURCE[0]}")/config.sh"
+init_db
 
-source ./db-crud/create-db.sh
-source ./db-crud/drop-db.sh
-source ./db-crud/list-db.sh
-source ./db-crud/connect-db.sh
-
+# source DB CRUD modules
+source "$(dirname "${BASH_SOURCE[0]}")/db-crud/create-db.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/db-crud/drop-db.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/db-crud/list-db.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/db-crud/connect-db.sh"
 
 runDBMS(){
     echo "Welcome To DBMS"
@@ -39,14 +39,11 @@ runDBMS(){
             ;;
         *)
             echo "Invalid Choice, Please Try Again."
-            
             ;;
     esac
 }
 
-
-
-while [ true ]; do
-  runDBMS;
+while true; do
+  runDBMS
   echo "---------------------------------------------------------"
 done

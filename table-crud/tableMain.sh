@@ -1,15 +1,34 @@
-#!/bin/bash
-# - Create Table 
-# - List Tables
-# - Drop Table
-# - Insert into Table
-# - Select From Table
-# - Delete From Table
-# - Update Table
+#!/usr/bin/env bash
+set -euo pipefail
+
+# Table main menu and dispatcher
+# runTableCRUD <db_name> - interactive table-level CRUD menu for the connected database
+
+# ensure config is loaded
+if [ -z "${DB_ROOT:-}" ]; then
+  source "$(dirname "${BASH_SOURCE[0]}")/../config.sh"
+fi
+
+# source table actions
+source "$(dirname "${BASH_SOURCE[0]}")/create-table.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/list-tables.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/insert-into-table.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/select-from-table.sh"
+
+# Stubs for not-yet-implemented actions; keeps the menu safe to use
+dropTable(){ echo "dropTable: not implemented yet"; }
+deleteFromTable(){ echo "deleteFromTable: not implemented yet"; }
+updateTable(){ echo "updateTable: not implemented yet"; }
 
 runTableCRUD(){
-  while [ true ]; do
-    echo "Welcome To Table CRUD"
+  local DB_NAME="${1:-}"
+  if [ -z "$DB_NAME" ]; then
+    echo "runTableCRUD: missing database name" >&2
+    return 1
+  fi
+
+  while true; do
+    echo "Welcome To Table CRUD (DB: $DB_NAME)"
     echo "1- Create Table"
     echo "2- List Tables"
     echo "3- Drop Table"
@@ -23,35 +42,34 @@ runTableCRUD(){
 
     case $choice in
         1)
-            createTable
+            createTable "$DB_NAME"
             ;;
         2)
-            listTables
+            listTables "$DB_NAME"
             ;;
         3)
-            dropTable
+            dropTable "$DB_NAME"
             ;;
         4)
-            insertIntoTable
+            insertIntoTable "$DB_NAME"
             ;;
         5)
-            selectFromTable
+            selectFromTable "$DB_NAME"
             ;;
         6)
-            deleteFromTable
+            deleteFromTable "$DB_NAME"
             ;;
         7)
-            updateTable
+            updateTable "$DB_NAME"
             ;;
         8)
             return 0
             ;;
         *)
             echo "Invalid Choice, Please Try Again."
-            
             ;;
     esac
   done
 }
 
-
+export -f runTableCRUD
