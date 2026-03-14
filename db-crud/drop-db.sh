@@ -1,15 +1,17 @@
 #!/bin/bash
-source ./helpers/dbValidations.sh
+set -euo pipefail
 
-
+if [ -z "${DB_ROOT:-}" ]; then
+  source "$(dirname "${BASH_SOURCE[0]}")/../config.sh"
+fi
+source "$(dirname "${BASH_SOURCE[0]}")/../helpers/dbValidations.sh"
 
 dropDatabase(){
-  echo "Please enter your db name you wish to drop"
-  read dbName;
-  if  ! isExsist $dbName ; then
-    echo "database doesnt exsist"
+  read -p "Please enter your db name you wish to drop: " dbName
+  if ! isExsist "$dbName" ; then
+    echo "database doesn't exist"
   else
-    rm  -r ./databases/$dbName
-    echo "data base dropped"
+    rm -rf "$DB_ROOT/$dbName"
+    echo "database dropped"
   fi
 }

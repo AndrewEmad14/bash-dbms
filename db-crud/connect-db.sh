@@ -1,16 +1,18 @@
 #!/bin/bash
+set -euo pipefail
 
-source ./table-crud/tableMain.sh
+if [ -z "${DB_ROOT:-}" ]; then
+  source "$(dirname "${BASH_SOURCE[0]}")/../config.sh"
+fi
+source "$(dirname "${BASH_SOURCE[0]}")/../helpers/dbValidations.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/../table-crud/tableMain.sh"
 
 connectToDatabase(){
-
-  echo "Please enter your db name you wish to connect to"
-  read dbName;
-  if  ! isExsist $dbName ; then
-    echo "database doesnt exsist"
+  read -p "Please enter your db name you wish to connect to: " dbName
+  if ! isExsist "$dbName" ; then
+    echo "database doesn't exist"
   else
     echo "connected to $dbName database"
-    runTableCRUD $dbName
-    
+    runTableCRUD "$dbName"
   fi
 }
