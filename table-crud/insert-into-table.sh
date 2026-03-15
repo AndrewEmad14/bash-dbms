@@ -134,7 +134,7 @@ insertIntoTable(){
         continue
       fi
 
-      if ! isPrimaryKeyUnique "$DB_NAME" "$tableName" "$pkval" ; then
+      if ! isPrimaryKey "$DB_NAME" "$tableName" "$pkval" ; then
         echo "Primary key value '$pkval' already exists. Enter a different value." >&2
         # reset and reprompt
         values[$pk_index]=""

@@ -88,7 +88,7 @@ validateValueByType(){
 
 # Check primary-key uniqueness by consulting the .idx file
 # Returns 0 if unique (i.e., not present), 1 if present
-isPrimaryKeyUnique(){
+isPrimaryKey(){
   local db="$1"; local table="$2"; local val="$3"
   local idx="$DB_ROOT/$db/$table$IDX_EXT"
   if [ ! -f "$idx" ]; then
@@ -152,7 +152,7 @@ validate_meta_file(){
 }
 
 # export functions for subshells that source helpers then call functions
-export -f validateName  isDBExists isTableExists trim isPositiveInteger isInteger isFloat isDate validateValueByType isPrimaryKeyUnique ensureIndexFile prompt_confirm validate_meta_file
+export -f validateName  isDBExists isTableExists trim isPositiveInteger isInteger isFloat isDate validateValueByType isPrimaryKey ensureIndexFile prompt_confirm validate_meta_file
  
 # Ensure values do not contain the field delimiter
 validateNoDelimiter(){
