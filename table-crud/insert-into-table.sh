@@ -18,10 +18,11 @@ fi
 source "$(dirname "${BASH_SOURCE[0]}")/../helpers/dbValidations.sh"
 
 insertIntoTable(){
+  # :-  default to empty string if not provided , it isnt required but is there for readability
   local DB_NAME="${1:-}"
   if [ -z "$DB_NAME" ]; then
     echo "insertIntoTable: missing database name" >&2
-    return 1
+    return 0
   fi
 
   read -r -p "Enter table name to insert into: " tableName
@@ -32,13 +33,13 @@ insertIntoTable(){
 
   if [ ! -f "$metaFile" ]; then
     echo "Table not found: $tableName" >&2
-    return 1
+    return 0
   fi
 
   # validate meta file
   if ! validate_meta_file "$metaFile"; then
     echo "Invalid table metadata for $tableName" >&2
-    return 1
+    return 0
   fi
 
   # read metadata header (first line)
@@ -46,7 +47,7 @@ insertIntoTable(){
   metaLine=$(sed -n '1p' "$metaFile" || echo "")
   if [ -z "$metaLine" ]; then
     echo "Invalid or empty metadata for table $tableName" >&2
-    return 1
+    return 0
   fi
 
   # parse columns
@@ -161,7 +162,6 @@ insertIntoTable(){
   if [ "$pk_index" -ge 0 ]; then
     echo "${values[$pk_index]}" >> "$idxFile"
   fi
-
   echo "Row inserted into $tableName"
 }
 

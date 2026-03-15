@@ -13,13 +13,13 @@ listTables(){
   local DB_NAME="${1:-}"
   if [ -z "$DB_NAME" ]; then
     echo "listTables: missing database name" >&2
-    return 1
+    return 0
   fi
 
   local dbDir="$DB_ROOT/$DB_NAME"
   if [ ! -d "$dbDir" ]; then
     echo "Database not found: $DB_NAME" >&2
-    return 1
+    return 0
   fi
 
   shopt -s nullglob

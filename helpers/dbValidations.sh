@@ -17,10 +17,6 @@ validateName(){
   [[ "$1" =~ ^[a-z][a-z0-9_]*$ ]]
 }
 
-# Backwards-compatible alias used in other scripts: checks for database directory
-isExsist(){
-  [ -d "$DB_ROOT/$1" ]
-}
 
 # Explicit DB exists check
 isDBExists(){
@@ -156,7 +152,7 @@ validate_meta_file(){
 }
 
 # export functions for subshells that source helpers then call functions
-export -f validateName isExsist isDBExists isTableExists trim isPositiveInteger isInteger isFloat isDate validateValueByType isPrimaryKeyUnique ensureIndexFile prompt_confirm validate_meta_file
+export -f validateName  isDBExists isTableExists trim isPositiveInteger isInteger isFloat isDate validateValueByType isPrimaryKeyUnique ensureIndexFile prompt_confirm validate_meta_file
  
 # Ensure values do not contain the field delimiter
 validateNoDelimiter(){
