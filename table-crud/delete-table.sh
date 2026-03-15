@@ -144,7 +144,9 @@ deleteFromTable(){
         if [ -z "$out" ]; then out="$v"; else out+="$DELIM$v"; fi
       done
       echo "$out" >> "$tempDataFile"  
-      matched=$((matched+1))
+      else
+        matched=$((matched+1))
+      
     fi
     index=$((index+1))
   done < "$dataFile"
