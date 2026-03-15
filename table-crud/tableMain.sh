@@ -16,9 +16,9 @@ source "$(dirname "${BASH_SOURCE[0]}")/insert-into-table.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/select-from-table.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/drop-table.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/delete-table.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/update-table.sh"
 # Stubs for not-yet-implemented actions; keeps the menu safe to use
 
-updateTable(){ echo "updateTable: not implemented yet"; }
 
 runTableCRUD(){
   local DB_NAME="${1:-}"

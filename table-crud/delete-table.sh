@@ -155,4 +155,4 @@ deleteFromTable(){
   return 0
 }
 
-export -f selectFromTable
+export -f deleteFromTable

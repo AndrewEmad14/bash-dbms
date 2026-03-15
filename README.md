@@ -127,7 +127,7 @@ scripts. Important helpers include:
 - `validateName(value)` — checks identifier naming rules.
 - `validateValueByType(value, type)` — checks `int`, `float`, `date`, `string`.
 - `validateNoDelimiter(value)` — rejects input containing `DELIM` (the `|`).
-- `isPrimaryKeyUnique(db, table, value)` — checks `<table>.idx` for duplicates.
+- `isPrimaryKey(db, table, value)` — checks `<table>.idx` if pk exsists.
 - `ensureIndexFile(db, table)` — creates `.idx` if missing.
 - `validate_meta_file(path)` — ensures `.meta` header is valid and has exactly one PK.
 - `trim(value)` — trims whitespace.
