@@ -14,18 +14,18 @@ fi
 # Load helpers
 source "$(dirname "${BASH_SOURCE[0]}")/../helpers/dbValidations.sh"
 
-selectFromTable(){
+deleteFromTable(){
   local DB_NAME="${1:-}"
   if [ -z "$DB_NAME" ]; then
-    echo "selectFromTable: missing database name" >&2
+    echo "deleteFromTable: missing database name" >&2
     return 0
   fi
 
-  read -r -p "Enter table name to select from: " tableName
+  read -r -p "Enter table name to delete from: " tableName
   tableName=$(trim "$tableName")
   local metaFile="$DB_ROOT/$DB_NAME/$tableName$META_EXT"
   local dataFile="$DB_ROOT/$DB_NAME/$tableName$DATA_EXT"
-
+  local indexFile="$DB_ROOT/$DB_NAME/${tableName}$IDX_EXT"
   if [ ! -f "$metaFile" ]; then
     echo "Table not found: $tableName" >&2
     return 0
@@ -56,8 +56,8 @@ selectFromTable(){
   # Ask user whether to filter
   local choice
   while true; do
-    echo "\nSelect options:"
-    echo "1) Show all rows"
+    echo "\n delete options:"
+    echo "1) delete all rows"
     echo "2) Filter rows (WHERE column = value)"
     read -r -p "Choose 1 or 2: " choice
     case "$choice" in
@@ -66,17 +66,6 @@ selectFromTable(){
     esac
   done
 
-  # Print header
-  local header=""
-  for i in "${!col_names[@]}"; do
-    if [ -z "$header" ]; then
-      header="${col_names[i]}"
-    else
-      header+="$DELIM${col_names[i]}"
-    fi
-  done
-  printf "%s\n" "$header"
-
   # if data file missing or empty, nothing to show
   if [ ! -f "$dataFile" ] || [ ! -s "$dataFile" ]; then
     echo "(no rows)"
@@ -84,31 +73,18 @@ selectFromTable(){
   fi
 
   local matched=0
-
+  # delete all rows , just truncate data and index files
   if [ "$choice" -eq 1 ]; then
-    # Show all rows
-    while IFS= read -r line || [ -n "$line" ]; do
-      # split by delimiter safely
-      IFS="$DELIM" read -r -a fields <<< "$line"
-      # build output line aligning with header
-      local out=""
-      local j
-      for j in "${!col_names[@]}"; do
-        local val="${fields[j]:-}"
-        if [ -z "$out" ]; then
-          out="$val"
-        else
-          out+="$DELIM$val"
-        fi
-      done
-      printf "%s\n" "$out"
-      matched=$((matched+1))
-    done < "$dataFile"
-    echo "-- $matched row(s) returned --"
+    # delete all: just truncate data file
+    matched=$(wc -l < "$dataFile")
+    echo "" > "$dataFile"
+    echo "" > "$indexFile"
+    echo "-- $matched row(s) deleted --"
     return 0
   fi
 
-  # choice == 2: filter
+  # choice == 2: delete by filter
+
   # ask which column to filter by
   local filter_col
   local filter_idx=-1
@@ -151,11 +127,15 @@ selectFromTable(){
     break
   done
 
+  local tempDataFile="$(mktemp)"
+  local tempIdxFile="$(mktemp)"
+  local index=1
   # scan and print matching rows
   while IFS= read -r line || [ -n "$line" ]; do
     IFS="$DELIM" read -r -a fields <<< "$line"
     local val="${fields[filter_idx]:-}"
-    if [ "$val" = "$filter_val" ]; then
+    if [ "$val" != "$filter_val" ]; then
+      echo $((index)) >> "$tempIdxFile"
       # print row
       local out=""
       local j
@@ -163,12 +143,15 @@ selectFromTable(){
         local v="${fields[j]:-}"
         if [ -z "$out" ]; then out="$v"; else out+="$DELIM$v"; fi
       done
-      printf "%s\n" "$out"
+      echo "$out" >> "$tempDataFile"  
       matched=$((matched+1))
     fi
+    index=$((index+1))
   done < "$dataFile"
-
-  echo "-- $matched row(s) returned --"
+  cat "$tempDataFile" > "$dataFile"
+  cat "$tempIdxFile" > "$indexFile"
+  rm "$tempDataFile" "$tempIdxFile"
+  echo "-- $matched row(s) deleted --"
   return 0
 }
 

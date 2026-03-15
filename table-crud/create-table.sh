@@ -22,7 +22,7 @@ createTable(){
   local DB_NAME="${1:-}"
   if [ -z "$DB_NAME" ]; then
     echo "createTable: missing database name" >&2
-    return 1
+    return 0
   fi
 
   # Table name
@@ -31,13 +31,13 @@ createTable(){
   tableName=$(trim "$tableName")
   if ! validateName "$tableName" ; then
     echo "Invalid table name. Must start with a lowercase letter and contain only lowercase letters, digits or underscore." >&2
-    return 1
+    return 0
   fi
 
   local tableMetaFile="$DB_ROOT/$DB_NAME/$tableName$META_EXT"
   if [ -e "$tableMetaFile" ]; then
     echo "Table already exists: $tableName" >&2
-    return 1
+    return 0
   fi
 
   # Number of columns
@@ -160,7 +160,7 @@ createTable(){
       return $?
     fi
     echo "Aborting table creation." >&2
-    return 1
+    return 0
   fi
 
   # Ensure DB directory exists and write files

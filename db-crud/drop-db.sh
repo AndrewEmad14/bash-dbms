@@ -8,7 +8,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../helpers/dbValidations.sh"
 
 dropDatabase(){
   read -p "Please enter your db name you wish to drop: " dbName
-  if ! isExsist "$dbName" ; then
+  if ! isDBExists "$dbName" ; then
     echo "database doesn't exist"
   else
     rm -rf "$DB_ROOT/$dbName"

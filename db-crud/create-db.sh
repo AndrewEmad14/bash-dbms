@@ -9,7 +9,7 @@ source "$(dirname "${BASH_SOURCE[0]}")/../helpers/dbValidations.sh"
 
 createDatabase(){
   read -p "Please enter your db name (lowercase letters, numbers, underscores): " dbName
-  if isExsist "$dbName" ; then
+  if isDBExists "$dbName" ; then
     echo "database already exists"
   elif ! validateName "$dbName" ; then
     echo "invalid format, please try again"

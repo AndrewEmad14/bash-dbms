@@ -14,10 +14,10 @@ source "$(dirname "${BASH_SOURCE[0]}")/create-table.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/list-tables.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/insert-into-table.sh"
 source "$(dirname "${BASH_SOURCE[0]}")/select-from-table.sh"
-
+source "$(dirname "${BASH_SOURCE[0]}")/drop-table.sh"
+source "$(dirname "${BASH_SOURCE[0]}")/delete-table.sh"
 # Stubs for not-yet-implemented actions; keeps the menu safe to use
-dropTable(){ echo "dropTable: not implemented yet"; }
-deleteFromTable(){ echo "deleteFromTable: not implemented yet"; }
+
 updateTable(){ echo "updateTable: not implemented yet"; }
 
 runTableCRUD(){
@@ -57,7 +57,7 @@ runTableCRUD(){
             selectFromTable "$DB_NAME"
             ;;
         6)
-            deleteFromTable "$DB_NAME"
+            deleteFromTable "$DB_NAME" 
             ;;
         7)
             updateTable "$DB_NAME"
